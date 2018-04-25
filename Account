@@ -1,1 +1,69 @@
-//need to implement account
+package accounts;
+
+public abstract class Account {
+	
+	String name;
+	double balance, limit;
+	boolean hasLimit;
+	
+	public Account(String n, double b)
+	{
+		name = n;
+		balance = b;
+		limit = -1;
+		hasLimit = false;
+	}
+	public Account(String n, double b, double l)
+	{
+		name = n;
+		balance = b;
+		limit = l;
+		hasLimit = true;
+	}
+	
+	public String getName()
+	{
+		return name;
+	}
+	public void setName(String n)
+	{
+		name = n;
+	}
+	
+	public double getBalance()
+	{
+		return balance;
+	}
+	public void setBalance(double b)
+	{
+		balance = b;
+	}
+	
+	public double getLimit()
+	{
+		return limit;
+	}
+	public void setHasLimit(boolean l)
+	{
+		hasLimit = l;		
+	}
+	public void setLimit(double l)
+	{
+		limit = l;
+	}
+	public boolean hasLimit()
+	{
+		return hasLimit;
+	}
+	
+	public void addAmount(double a)
+	{
+		balance += a;
+	}
+	public void deductAmount(double a)
+	{
+		balance -= a;
+	}
+	
+
+}
