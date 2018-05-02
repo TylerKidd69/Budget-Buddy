@@ -1,0 +1,302 @@
+package dataStructures;
+
+import exception.ExceptionCollection;
+/*import java.io.Serializable;*/
+
+public class IndexedList<T> implements ListInterface<T>{
+	private LinearNode<T> front, rear;
+	private static int count = 0;
+	
+	//constructors
+	public IndexedList(T element) {
+		front = rear = new LinearNode<T>(element, 0);
+		count++;
+	}
+	
+	public IndexedList() {
+		front = rear = null;
+	}
+	
+	
+	public void addToFront(T element) {
+		if(isEmpty())
+			front = rear = new LinearNode<T>(element, 0);
+		else {
+			LinearNode<T> temp = new LinearNode<T>(element, 0);
+			//link the new element and the current front element
+			temp.setNext(front);
+			front.setPrevious(temp);
+			front = temp;
+			
+			indexShift(front);
+		}
+		
+		count++;
+	}
+
+	
+	public void addToRear(T element) {
+		if(isEmpty())
+			front = rear = new LinearNode<T>(element, 0);
+		else {
+			LinearNode<T> temp = new LinearNode<T>(element, rear.getIndex()+1);
+			//link the new element and the previous rear element
+			rear.setNext(temp);
+			temp.setPrevious(rear);
+			rear = temp;
+		}
+		
+		count++;
+	}
+
+	
+	public void addAfter(T target, T element) throws ExceptionCollection {
+		LinearNode<T> found = find(target);
+		//find target returns null if it cannot find the target
+		if(found==null)
+			throw new ExceptionCollection("Element not found");
+		
+		LinearNode<T> temp = new LinearNode<T>(element, found.getIndex()+1);
+		//linking all 3 elements, both next and previous
+		temp.setNext(found.getNext());
+		found.getNext().setPrevious(temp);
+		found.setNext(temp);
+		temp.setPrevious(found);
+		
+		indexShift(found);
+		
+		count++;
+	}
+	
+	//overloaded addAfter method with an int parameter
+	public void addAfter(int targetIndex, T element) throws ExceptionCollection {
+		if(targetIndex>count)
+			throw new ExceptionCollection("Out of bounds exception");
+		
+		LinearNode<T> found = find(targetIndex);
+		//find target returns null if it cannot find the target
+		if(found==null)
+			throw new ExceptionCollection("Element not found");
+		
+		LinearNode<T> temp = new LinearNode<T>(element, found.getIndex()+1);
+		//linking all 3 elements, both next and previous
+		temp.setNext(found.getNext());
+		found.getNext().setPrevious(temp);
+		found.setNext(temp);
+		temp.setPrevious(found);
+		
+		indexShift(found);
+		
+		count++;
+	}
+
+
+	public T removeFirst() throws ExceptionCollection {
+		if(isEmpty())
+			throw new ExceptionCollection("List is empty");
+		
+		T result = front.getElement();
+		front = front.getNext();
+		if(front != null) {
+			front.setPrevious(null); //only runs if there is still an element in the list
+			front.setIndex(0);
+			indexShift(front);
+		}
+		
+		count--;
+		return result;
+	}
+
+	
+	public T removeLast() throws ExceptionCollection {
+		if(isEmpty())
+			throw new ExceptionCollection("List is empty");
+		
+		T result = rear.getElement();
+		rear = rear.getPrevious();
+		if(rear != null)
+			rear.setNext(null); //only runs if there is still an element in the list
+		
+		count--;
+		return result;
+	}
+
+	
+	//remove method with a T parameter
+	public T remove(T target) throws ExceptionCollection {		
+		if(isEmpty())
+			throw new ExceptionCollection("List is empty");
+		
+		LinearNode<T> found = find(target); //returns null if the target is not found in the list
+		if(found==null)
+			throw new ExceptionCollection("Element not found");
+		
+		T result = found.getElement();
+		
+		if(count==1) 
+			front = rear = null; //list is now empty
+		else if(found.equals(front)) { //if the removed element is at the front of the list
+			front = found.getNext();
+			if(front != null) { //only runs if there is still an element in the list
+				front.setPrevious(null);
+				indexShift(front);
+			}
+		}
+		else if(found.equals(rear)) { //if the removed element is at the rear of the list
+			rear = found.getPrevious();
+			rear.setNext(null);
+		}
+		else { //closing the gap where the removed element was
+			found.getPrevious().setNext(found.getNext());
+			found.getNext().setPrevious(found.getPrevious());
+			indexShift(found.getPrevious());
+		}
+		
+		count--;
+		return result;
+	}
+	
+	//overloaded remove method with an int parameter
+	public T remove(int targetIndex) throws ExceptionCollection {		
+		if(isEmpty())
+			throw new ExceptionCollection("List is empty");
+		
+		if(targetIndex>count)
+			throw new ExceptionCollection("Out of bounds exception");
+		
+		LinearNode<T> found = find(targetIndex); //returns null if the target is not found in the list
+		if(found==null)
+			throw new ExceptionCollection("Element not found");
+		
+		T result = found.getElement();
+		
+		if(count==1) 
+			front = rear = null; //list is now empty
+		else if(found.equals(front)) { //if the removed element is at the front of the list
+			front = found.getNext();
+			if(front != null) { //only runs if there is still an element in the list
+				front.setPrevious(null);
+				indexShift(front);
+			}
+		}
+		else if(found.equals(rear)) { //if the removed element is at the rear of the list
+			rear = found.getPrevious();
+			rear.setNext(null);
+		}
+		else { //closing the gap where the removed element was
+			found.getPrevious().setNext(found.getNext());
+			found.getNext().setPrevious(found.getPrevious());
+			indexShift(found.getPrevious());
+		}
+		
+		count--;
+		return result;
+	}
+
+
+	public T first() throws ExceptionCollection {
+		if(isEmpty())
+			throw new ExceptionCollection("List is empty");
+		
+		return front.getElement();
+	}
+
+
+	public T last() throws ExceptionCollection {
+		if(isEmpty())
+			throw new ExceptionCollection("List is empty");
+		
+		return rear.getElement();
+	}
+
+
+	public boolean contains(T element) {
+		if(find(element) == null) //find() returns null if the target element is not in the list
+			return false;
+		else
+			return true;
+	}
+
+	
+	public boolean isEmpty() {
+		if(count==0)
+			return true;
+		else
+			return false;
+	}
+
+
+	public int size() {
+		return count;
+	}
+	
+	//puts the current list into an array
+	public void toArray(T[] arr) {
+		LinearNode<T> temp = front;
+		
+		for(int count = 0; count < arr.length; count++) {
+			arr[count] = temp.getElement();
+			temp = temp.getNext();
+		}
+	}
+	
+	public String toString() {
+		LinearNode<T> current = front;
+		String result = "";
+		do {
+			result += current.getElement().toString() + "\n";
+			current = current.getNext();
+		} while(current != null);
+		
+		return result;
+	}
+	
+
+	private void indexShift(LinearNode<T> node) {
+		LinearNode<T> temp = node.getNext();
+		
+		//increment each index after node by 1
+		while(temp != null) {
+			temp.setIndex(temp.getPrevious().getIndex()+1);
+			temp = temp.getNext();
+		}
+	}
+	
+	//searches the list for the target element
+	private LinearNode<T> find(T target) {
+		LinearNode<T> scan = front;
+		boolean found = false;
+		
+		while(!found && scan != null) {
+			if(target.equals(scan.getElement())) {
+				found = true;
+			}
+			else
+				scan = scan.getNext();
+		}
+		
+		if(!found)
+			return null;
+		
+		return scan;
+	}
+	
+	//search the list for target index
+	private LinearNode<T> find(int targetIndex) {
+		LinearNode<T> scan = front;
+		boolean found = false;
+		
+		while(!found && scan != null) {
+			if(targetIndex == scan.getIndex())
+				found = true;
+			else
+				scan = scan.getNext();
+		}
+		
+		if(!found)
+			return null;
+		
+		return scan;
+	}
+	
+}
