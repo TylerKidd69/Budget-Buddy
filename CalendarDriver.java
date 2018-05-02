@@ -69,7 +69,7 @@ public class CalendarDriver {
 	      
 	      System.out.println("\n");
 	      
-	      Calendar targetDate = Calendar.getInstance();
+	      Calendar targetDate = Calendar.getInstance(); //getInstance grabs the current date and time
 	      //calculate days until target date
 	      targetDate.add(Calendar.MONTH, 6);
 	      Calendar currentDate = Calendar.getInstance();
