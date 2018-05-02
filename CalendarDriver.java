@@ -62,6 +62,10 @@ public class CalendarDriver {
 	      calTemp.roll(Calendar.HOUR_OF_DAY, 11);
 	      System.out.println("Roll 11 hours, it will be: " + calTemp.getTime());
 	      System.out.println();
+	     
+	      
+	      
+	      
 	      
 	      System.out.println("\n");
 	      
@@ -85,6 +89,57 @@ public class CalendarDriver {
 	      System.out.println("Current Week: "+currentWeek);
 	      System.out.println("Target Week: "+targetWeek);
 	      System.out.println("You have "+(targetWeek - currentWeek)+" weeks to reach your goal.");
+	      System.out.println("________________________");
+	      
+	      
+	      //new targetdates
+	      
+	      targetDate = currentDate.getInstance();
+	      
+	      //set( year, month, day, hour, minute, sec)
+	      targetDate.set(currentDate.get(Calendar.YEAR)+1, 5, 6, 0, 0, 0);
+	      System.out.println("Target Date: " +targetDate.getTime());
+	      System.out.println("Current Date: "+currentDate.getTime());
+	      
+	      //temporary calendar object used to calculate number of weeks
+	      Calendar temp = currentDate.getInstance();
+	      
+	      //System.out.println(temp.compareTo(targetDate));
+	      
+	      //number of days counter
+	      int days = 0;
+	      
+	      //Determines how many weeks until targetDate
+	      while(temp.compareTo(targetDate)<0)
+	      {
+	    	  //Checks to see if there is a full year between dates
+	    	  //if yes, adds 365 days (1 year)
+	    	  if(temp.get(Calendar.YEAR)<targetDate.get(Calendar.YEAR) &&
+	    			  temp.get(Calendar.MONTH) < targetDate.get(Calendar.MONTH))
+	    	  {
+	    		  days+=365;
+	    		  temp.add(Calendar.YEAR,1);
+	    	  }
+	    	  
+	    	  //checks to see if there is a full week between dates
+	    	  //adds 7 days (1 week)
+	    	  if(temp.get(Calendar.WEEK_OF_YEAR) < targetDate.get(Calendar.WEEK_OF_YEAR))
+	    	  {
+	    		  days+=7;
+	    		  temp.add(Calendar.WEEK_OF_YEAR, 1);
+	    	  }
+	    	  
+	    	  //adds days until temp.day = targetdate.day
+	    	  if(temp.get(Calendar.DAY_OF_MONTH) != targetDate.get(Calendar.DAY_OF_MONTH))
+	    	  {
+	    		  days++;
+	    		  temp.add(Calendar.DAY_OF_MONTH, 1);
+	    	  }
+	      }
+	      
+	      //calculates how many weeks out of calculated days
+	      int weeks = days/7;
+	      System.out.println("Weeks till target date: "+weeks);
 	      
 	}
 
