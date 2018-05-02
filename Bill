@@ -1,0 +1,19 @@
+package accounts;
+
+public class Bill extends Account{
+	
+	private int priority;
+	
+	//constructor
+	public Bill(String name, double limit) {
+		super(name, limit);
+	}
+	
+	public void payWhole() { balance = 0; }
+	public void payAmount(double amount) { deductAmount(amount); }
+	
+	public void setPriority(int priority) { this.priority = priority; }
+	public int getPriority() { return priority; }
+	
+	public String getName() { return this.getName(); }
+}
