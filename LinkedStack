@@ -1,0 +1,78 @@
+package dataStructures;
+
+import exception.ExceptionCollection;
+
+public class LinkedStack<T> implements StackInterface<T>{
+	private LinearNode<T> top;
+	private int count;
+	
+	//constructors
+	public LinkedStack(T element) {
+		top = new LinearNode<T>(element);
+		count = 1;
+	}
+	public LinkedStack() {
+		top = null;
+		count = 0;
+	}
+	
+	//adds an item to the stack after packaging it into a linear node
+	public void push(T element) {
+		LinearNode<T> node = new LinearNode<T>(element);
+		
+		//if stack is empty, set top equal to the new node
+		if(count == 0)
+			top = node;
+		else { //else link the old top and the new node being added
+			node.setNext(top);
+			top = node;
+		}
+		
+		count++;		
+	}
+
+	//removes and returns an item off the stack
+	public T pop() throws ExceptionCollection {
+		if(count == 0) //if the stack is empty, throw an exception
+			throw new ExceptionCollection("Stack is empty");
+		
+		T result = top.getElement();
+		top = top.getNext();
+		count--;
+		
+		return result;
+	}
+
+	//returns the item on top of the stack without removing it
+	public T peek() throws ExceptionCollection {
+		if(count == 0) //if the stack is empty, throw an exception
+			throw new ExceptionCollection("Stack is empty");
+		
+		return top.getElement();
+	}
+
+	//returns the current size of the stack
+	public int size() { return count; }
+
+	//lets you know if the stack is currently empty or not
+	public boolean isEmpty() {
+		if(count==0)
+			return true;
+		else
+			return false;
+	}
+	
+	//displays all toString methods for every item in the stack
+	public String toString() {
+		String result = "";
+		LinearNode<T> temp = top;
+		for(int i = 0; i < count; i++) {
+			result += temp.getElement().toString() + "\n";
+			temp = temp.getNext();
+		}
+		
+		return result;
+	}
+
+	
+}
