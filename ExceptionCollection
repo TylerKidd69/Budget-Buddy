@@ -1,9 +1,0 @@
-package exception;
-
-@SuppressWarnings("serial")
-public class ExceptionCollection extends RuntimeException{
-	public ExceptionCollection(String message) {
-		super(message);
-	}
-
-}
